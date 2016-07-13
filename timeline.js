@@ -15,7 +15,7 @@ const elements = [
   {
     create: document => createSvgElement(document, 'circle', {
       cx: 50,
-      cy: 5,
+      cy: 10,
       r: 5,
       fill: 'white',
       stroke: color(0xff0000),
@@ -25,7 +25,7 @@ const elements = [
         time: 0,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: 5,
+            cy: 10,
           });
         },
       },
@@ -43,7 +43,7 @@ const elements = [
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: 395,
+            cy: 390,
             r: scale(progress, 0, 5),
           });
         },
@@ -53,7 +53,7 @@ const elements = [
         duration: 300,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: 395,
+            cy: 390,
             r: 5,
           });
         },
@@ -63,7 +63,7 @@ const elements = [
   {
     create: document => createSvgElement(document, 'circle', {
       cx: 50,
-      cy: 395,
+      cy: 390,
       r: 5,
       fill: 'white',
       stroke: color(0xff0000),
@@ -75,7 +75,7 @@ const elements = [
           setAttributes(circle, {
             stroke: color(0xff0000),
             r: 5,
-            cy: 395,
+            cy: 390,
           });
         },
       },
@@ -84,7 +84,7 @@ const elements = [
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: scale(progress, 395, 200),
+            cy: scale(progress, 390, 200),
           });
         },
       },
@@ -142,12 +142,44 @@ const elements = [
         time: 1000,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: 5,
+            cy: 10,
           });
         },
       },
     ],
   },
+  {
+    create: document => createSvgElement(document, 'text', {
+      x: 50,
+      y: 205,
+      'text-anchor': 'middle',
+      color: 'green',
+    }, '7'),
+    frames: [
+      {
+        time: 0,
+        duration: 500,
+        update: (text, progress) => {
+          text.textContent = '7';
+          setAttributes(text, {
+            opacity: 1 - progress,
+          });
+        },
+      },
+      {
+        time: 1000,
+        update: (text, progress) => {
+          text.textContent = '30';
+          setAttributes(text, {
+            opacity: progress,
+          });
+        },
+      },
+      {
+        time: 1500,
+      },
+    ],
+  }
 ];
 
 
@@ -269,9 +301,12 @@ function setAttributes(element, attrs) {
   }
 }
 
-function createSvgElement(document, tagname, attrs = {}) {
+function createSvgElement(document, tagname, attrs = {}, content) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', tagname);
   setAttributes(element, attrs);
+  if (content) {
+    element.textContent = content;
+  }
   return element;
 }
 
