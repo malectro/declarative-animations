@@ -9,7 +9,6 @@ const elements = [
     frames: [
       {
         time: 0,
-        duration: 1500,
       },
     ],
   },
@@ -22,6 +21,14 @@ const elements = [
       stroke: color(0xff0000),
     }),
     frames: [
+      {
+        time: 0,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: 5,
+          });
+        },
+      },
       {
         time: 500,
         duration: 500,
@@ -41,6 +48,16 @@ const elements = [
           });
         },
       },
+      {
+        time: 1500,
+        duration: 300,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: 395,
+            r: 5,
+          });
+        },
+      },
     ],
   },
   {
@@ -52,6 +69,16 @@ const elements = [
       stroke: color(0xff0000),
     }),
     frames: [
+      {
+        time: 0,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            stroke: color(0xff0000),
+            r: 5,
+            cy: 395,
+          });
+        },
+      },
       {
         time: 500,
         duration: 500,
@@ -66,11 +93,22 @@ const elements = [
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
+            cy: 200,
             r: scale(progress, 5, 10),
             stroke: tweenColors(progress, color(0xff0000), color(0x00ff00)),
           });
         },
       },
+      {
+        time: 1500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: 200,
+            r: 10,
+            stroke: color(0x00ff00),
+          });
+        },
+      }
     ],
   },
   {
@@ -84,9 +122,9 @@ const elements = [
     frames: [
       {
         time: 0,
-        duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
+            cy: 200,
             r: scale(progress, 10, 5),
             stroke: tweenColors(progress, color(0x00ff00), color(0xff0000)),
           });
@@ -94,10 +132,17 @@ const elements = [
       },
       {
         time: 500,
-        duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
             cy: scale(progress, 200, 5),
+          });
+        },
+      },
+      {
+        time: 1000,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: 5,
           });
         },
       },
@@ -106,19 +151,28 @@ const elements = [
 ];
 
 
-function createAnimation(elements) {
+function createAnimation(elements, options) {
+  const duration = elements.reduce((end, {frames}) => (
+    Math.max(end,
+      frames.reduce((max, {time, duration}) => Math.max(max, time + (duration || 0)), 0)
+    )
+  ), 0);
+  const theEnd = duration;
+
   elements = elements.map(element => {
     const frames = element.frames.map((frame, i) => {
       const nextFrame = element.frames[i + 1];
+
       let {duration} = frame;
-      if (!duration) {
+      if (duration === undefined) {
         if (nextFrame) {
           duration = nextFrame.time - frame.time;
         } else {
-          duration = 0;
+          duration = theEnd - frame.time;
         }
       }
       const end = frame.time + duration;
+
       return Object.assign({}, frame, {
         duration,
         end,
@@ -135,17 +189,15 @@ function createAnimation(elements) {
     });
   });
 
-  const duration = elements.reduce((end, element) => (
-    Math.max(end, element.end)
-  ), 0);
-
-  return {
+  return Object.assign({}, options, {
     elements,
     duration,
-  };
+  });
 }
 
-const animation = createAnimation(elements);
+const animation = createAnimation(elements, {
+  freeze: true,
+});
 
 const svg = document.getElementById('timeline');
 let animations = new Set();
@@ -159,6 +211,16 @@ function animate(animation) {
   animations.add(animation);
 }
 
+function deanimate(animation) {
+  for (let element of animation.elements) {
+    if (element.dom) {
+      svg.removeChild(element.dom);
+      element.dom = null;
+    }
+  }
+  animations.delete(animation);
+}
+
 function update(time) {
   requestAnimationFrame(update);
 
@@ -168,7 +230,6 @@ function update(time) {
   for (let animation of animations) {
     if (animation.end >= time) {
       const animationTime = time - animation.start;
-      console.log('animating');
       for (let element of animation.elements) {
         const frame = element.frames.find(frame => frame.time <= animationTime && frame.end >= animationTime);
         if (!frame && element.dom) {
@@ -187,17 +248,13 @@ function update(time) {
           }
         }
       }
-    } else {
-      for (let element of animation.elements) {
-        if (element.dom) {
-          svg.removeChild(element.dom);
-          element.dom = null;
-        }
-      }
-      animations.delete(animation);
+    } else if (!animation.freeze) {
+      deanimate(animation);
     }
   }
 }
+
+console.log(animation);
 
 requestAnimationFrame(update);
 
