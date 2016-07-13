@@ -9,7 +9,7 @@ const elements = [
     frames: [
       {
         time: 0,
-        duration: 600,
+        duration: 1500,
       },
     ],
   },
@@ -19,19 +19,85 @@ const elements = [
       cy: 5,
       r: 5,
       fill: 'white',
-      stroke: 'red',
+      stroke: color(0xff0000),
+    }),
+    frames: [
+      {
+        time: 500,
+        duration: 500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            r: scale(progress, 5, 0),
+          });
+        },
+      },
+      {
+        time: 1000,
+        duration: 500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: 395,
+            r: scale(progress, 0, 5),
+          });
+        },
+      },
+    ],
+  },
+  {
+    create: document => createSvgElement(document, 'circle', {
+      cx: 50,
+      cy: 395,
+      r: 5,
+      fill: 'white',
+      stroke: color(0xff0000),
+    }),
+    frames: [
+      {
+        time: 500,
+        duration: 500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: scale(progress, 395, 200),
+          });
+        },
+      },
+      {
+        time: 1000,
+        duration: 500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            r: scale(progress, 5, 10),
+            stroke: tweenColors(progress, color(0xff0000), color(0x00ff00)),
+          });
+        },
+      },
+    ],
+  },
+  {
+    create: document => createSvgElement(document, 'circle', {
+      cx: 50,
+      cy: 200,
+      r: 10,
+      fill: 'white',
+      stroke: 'green',
     }),
     frames: [
       {
         time: 0,
-        duration: 100,
-      },
-      {
-        time: 100,
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: progress * 400,
+            r: scale(progress, 10, 5),
+            stroke: tweenColors(progress, color(0x00ff00), color(0xff0000)),
+          });
+        },
+      },
+      {
+        time: 500,
+        duration: 500,
+        update: (circle, progress) => {
+          setAttributes(circle, {
+            cy: scale(progress, 200, 5),
           });
         },
       },
@@ -42,8 +108,16 @@ const elements = [
 
 function createAnimation(elements) {
   elements = elements.map(element => {
-    const frames = element.frames.map(frame => {
-      const duration = frame.duration || 0;
+    const frames = element.frames.map((frame, i) => {
+      const nextFrame = element.frames[i + 1];
+      let {duration} = frame;
+      if (!duration) {
+        if (nextFrame) {
+          duration = nextFrame.time - frame.time;
+        } else {
+          duration = 0;
+        }
+      }
       const end = frame.time + duration;
       return Object.assign({}, frame, {
         duration,
@@ -128,6 +202,10 @@ function update(time) {
 requestAnimationFrame(update);
 
 
+function scale(val, from, to) {
+  return val * (to - from) + from;
+}
+
 function setAttributes(element, attrs) {
   for (let key in attrs) {
     element.setAttribute(key, attrs[key]);
@@ -139,4 +217,58 @@ function createSvgElement(document, tagname, attrs = {}) {
   setAttributes(element, attrs);
   return element;
 }
+
+const basicColor = {
+  r: 0, g: 0, b: 0,
+
+  toString() {
+    const {r, g, b} = this;
+    return `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+  },
+
+  add(color) {
+    const {r, g, b} = this;
+    return Object.assign({}, this, {
+      r: r + color.r,
+      g: g + color.g,
+      b: b + color.b,
+    });
+  },
+
+  subtract(color) {
+    const {r, g, b} = this;
+    return Object.assign({}, this, {
+      r: r - color.r,
+      g: g - color.g,
+      b: b - color.b,
+    });
+  },
+
+  scale(value) {
+    const {r, g, b} = this;
+    return Object.assign({}, this, {
+      r: r * value,
+      g: g * value,
+      b: b * value,
+    });
+  },
+};
+function color(r, g, b) {
+  if (g === undefined && b === undefined) {
+    const hex = Math.floor(r);
+    r = hex >> 16 & 255;
+    g = hex >> 8 & 255;
+    b = hex & 255;
+  }
+  return Object.assign({}, basicColor, {r, g, b});
+}
+
+function tweenColors(progress, fromColor, toColor) {
+  return (toColor.subtract(fromColor)).scale(progress).add(fromColor);
+}
+
+
+document.body.onclick = () => {
+  animate(animation);
+};
 
