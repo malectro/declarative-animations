@@ -1,0 +1,23 @@
+{
+  "name": "declarative-animations",
+  "version": "0.0.0",
+  "description": "a renderer-agnostic method for animating elements using keyframes",
+  "main": "animation.js",
+  "dependencies": {
+    "bezier-easing": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malectro/declarative-animations.git"
+  },
+  "author": "Kyle Warren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/malectro/declarative-animations/issues"
+  },
+  "homepage": "https://github.com/malectro/declarative-animations#readme"
+}
