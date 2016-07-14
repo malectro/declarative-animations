@@ -42,7 +42,6 @@ function createAnimation(elements, options) {
   });
 }
 
-const svg = document.getElementById('timeline');
 let animations = new Set();
 
 let lastTime = 0;
@@ -99,6 +98,16 @@ function update(time) {
 
 function scale(val, from, to) {
   return val * (to - from) + from;
+}
+
+function constrain(val, from, to = 1) {
+  if (val <= from) {
+    return 0;
+  }
+  if (val >= to) {
+    return 1;
+  }
+  return (val - from) / (to - from);
 }
 
 function setAttributes(element, attrs) {

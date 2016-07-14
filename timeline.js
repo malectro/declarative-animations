@@ -186,9 +186,11 @@ const animation = createAnimation(elements, {
   freeze: true,
 });
 
-requestAnimationFrame(update);
-
 document.body.onclick = () => {
   animate(animation);
 };
+
+const svg = document.getElementById('timeline');
+
+requestAnimationFrame(update);
 
