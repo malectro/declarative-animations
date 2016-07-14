@@ -34,7 +34,7 @@ const elements = [
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            r: scale(progress, 5, 0),
+            r: scale(ease(progress), 5, 0),
           });
         },
       },
@@ -44,7 +44,7 @@ const elements = [
         update: (circle, progress) => {
           setAttributes(circle, {
             cy: 390,
-            r: scale(progress, 0, 5),
+            r: scale(ease(progress), 0, 5),
           });
         },
       },
@@ -84,7 +84,7 @@ const elements = [
         duration: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: scale(progress, 390, 200),
+            cy: scale(ease(progress), 390, 200),
           });
         },
       },
@@ -94,7 +94,7 @@ const elements = [
         update: (circle, progress) => {
           setAttributes(circle, {
             cy: 200,
-            r: scale(progress, 5, 10),
+            r: scale(ease(progress), 5, 10),
             stroke: tweenColors(progress, color(0xff0000), color(0x00ff00)),
           });
         },
@@ -125,7 +125,7 @@ const elements = [
         update: (circle, progress) => {
           setAttributes(circle, {
             cy: 200,
-            r: scale(progress, 10, 5),
+            r: scale(ease(progress), 10, 5),
             stroke: tweenColors(progress, color(0x00ff00), color(0xff0000)),
           });
         },
@@ -134,7 +134,7 @@ const elements = [
         time: 500,
         update: (circle, progress) => {
           setAttributes(circle, {
-            cy: scale(progress, 200, 5),
+            cy: scale(ease(progress), 200, 5),
           });
         },
       },
@@ -358,6 +358,11 @@ function color(r, g, b) {
 function tweenColors(progress, fromColor, toColor) {
   return (toColor.subtract(fromColor)).scale(progress).add(fromColor);
 }
+
+const easeIn = BezierEasing(0.42, 0, 1, 1);
+const easeOut = BezierEasing(0, 0, 0.58, 1);
+const easeInOut = BezierEasing(0.42, 0, 0.58, 1);
+const ease = BezierEasing(0.25, 0.1, 0.25, 1);
 
 
 document.body.onclick = () => {
