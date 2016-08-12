@@ -2,12 +2,18 @@
   "name": "declarative-animations",
   "version": "0.0.0",
   "description": "a renderer-agnostic method for animating elements using keyframes",
-  "main": "animation.js",
+  "main": "src/animation.js",
   "dependencies": {
     "bezier-easing": "^2.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "webpack": "^1.13.1"
+  },
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -1,4 +1,7 @@
-function createAnimation(elements, options) {
+import BezierEasing from 'bezier-easing';
+
+
+export function createAnimation(elements, options) {
   const duration = elements.reduce((end, {frames}) => (
     Math.max(end,
       frames.reduce((max, {time, duration}) => Math.max(max, time + (duration || 0)), 0)
@@ -45,7 +48,7 @@ function createAnimation(elements, options) {
 let animations = new Set();
 
 let lastTime = 0;
-function animate(animation) {
+export function animate(animation) {
   animation = Object.assign({}, animation, {
     start: lastTime,
     end: lastTime + animation.duration,
@@ -53,7 +56,7 @@ function animate(animation) {
   animations.add(animation);
 }
 
-function deanimate(animation) {
+export function deanimate(animation) {
   for (let element of animation.elements) {
     if (element.dom) {
       svg.removeChild(element.dom);
@@ -63,7 +66,7 @@ function deanimate(animation) {
   animations.delete(animation);
 }
 
-function update(time) {
+export function update(time) {
   requestAnimationFrame(update);
 
   const timeDelta = time - lastTime;
@@ -96,11 +99,11 @@ function update(time) {
   }
 }
 
-function scale(val, from, to) {
+export function scale(val, from, to) {
   return val * (to - from) + from;
 }
 
-function constrain(val, from, to = 1) {
+export function constrain(val, from, to = 1) {
   if (val <= from) {
     return 0;
   }
@@ -110,13 +113,13 @@ function constrain(val, from, to = 1) {
   return (val - from) / (to - from);
 }
 
-function setAttributes(element, attrs) {
+export function setAttributes(element, attrs) {
   for (let key in attrs) {
     element.setAttribute(key, attrs[key]);
   }
 }
 
-function createSvgElement(document, tagname, attrs = {}, content) {
+export function createSvgElement(document, tagname, attrs = {}, content) {
   const element = document.createElementNS('http://www.w3.org/2000/svg', tagname);
   setAttributes(element, attrs);
   if (content) {
@@ -160,7 +163,7 @@ const basicColor = {
     });
   },
 };
-function color(r, g, b) {
+export function color(r, g, b) {
   if (g === undefined && b === undefined) {
     const hex = Math.floor(r);
     r = hex >> 16 & 255;
@@ -170,12 +173,12 @@ function color(r, g, b) {
   return Object.assign({}, basicColor, {r, g, b});
 }
 
-function tweenColors(progress, fromColor, toColor) {
+export function tweenColors(progress, fromColor, toColor) {
   return (toColor.subtract(fromColor)).scale(progress).add(fromColor);
 }
 
-const easeIn = BezierEasing(0.42, 0, 1, 1);
-const easeOut = BezierEasing(0, 0, 0.58, 1);
-const easeInOut = BezierEasing(0.42, 0, 0.58, 1);
-const ease = BezierEasing(0.25, 0.1, 0.25, 1);
+export const easeIn = BezierEasing(0.42, 0, 1, 1);
+export const easeOut = BezierEasing(0, 0, 0.58, 1);
+export const easeInOut = BezierEasing(0.42, 0, 0.58, 1);
+export const ease = BezierEasing(0.25, 0.1, 0.25, 1);
 

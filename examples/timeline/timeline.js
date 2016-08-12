@@ -1,3 +1,5 @@
+const {createAnimation, animate, update, createSvgElement, setAttributes, scale, ease, tweenColors, color} = Animation;
+
 const elements = [
   {
     create: (document) => (
