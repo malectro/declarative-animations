@@ -2,7 +2,8 @@
   "name": "declarative-animations",
   "version": "0.0.0",
   "description": "a renderer-agnostic method for animating elements using keyframes",
-  "main": "src/animation.js",
+  "main": "build/animation.commonjs2.js",
+  "files": ["src", "build"],
   "dependencies": {
     "bezier-easing": "^2.0.3"
   },

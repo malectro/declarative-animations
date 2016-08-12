@@ -1,12 +1,14 @@
+function spread(...args) {
+  return Object.assign({}, ...args);
+}
 
-const config = {
+const output = {
+  path: 'build',
+  library: 'Animation',
+};
+
+const baseConfig = {
   entry: './src/animation.js',
-  output: {
-    path: 'build',
-    filename: 'animation.js',
-    library: 'Animation',
-    libraryTarget: 'umd',
-  },
   module: {
     loaders: [
       {
@@ -21,5 +23,20 @@ const config = {
   },
 };
 
-module.exports = config;
+const umdConfig = spread(baseConfig, {
+  output: spread(output, {
+    filename: 'animation.umd.js',
+    libraryTarget: 'umd',
+  }),
+});
+
+const commonJsConfig = spread(baseConfig, {
+  externals: ['bezier-easing'],
+  output: spread(output, {
+    filename: 'animation.commonjs2.js',
+    libraryTarget: 'commonjs2',
+  }),
+});
+
+module.exports = [umdConfig, commonJsConfig];
 
