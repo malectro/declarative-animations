@@ -68,6 +68,8 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var noop = function noop() {};
+
 	function createAnimation(elements, options) {
 	  var duration = elements.reduce(function (end, _ref) {
 	    var frames = _ref.frames;
@@ -109,7 +111,10 @@ module.exports =
 	      return Math.max(max, end);
 	    }, 0);
 
-	    return Object.assign({}, element, {
+	    return Object.assign({
+	      create: noop,
+	      destroy: noop
+	    }, element, {
 	      frames: frames,
 	      start: start,
 	      end: end
@@ -143,7 +148,7 @@ module.exports =
 	      var element = _step.value;
 
 	      if (element.dom) {
-	        svg.removeChild(element.dom);
+	        element.destroy(element.dom);
 	        element.dom = null;
 	      }
 	    }
@@ -194,12 +199,11 @@ module.exports =
 	                return frame.time <= animationTime && frame.end >= animationTime;
 	              });
 	              if (!frame && element.dom) {
-	                svg.removeChild(element.dom);
+	                element.destroy(element.dom);
 	                element.dom = null;
 	              } else if (frame) {
 	                if (!element.dom) {
 	                  element.dom = element.create(document);
-	                  svg.appendChild(element.dom);
 	                }
 
 	                if (frame.update) {

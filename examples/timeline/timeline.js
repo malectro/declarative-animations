@@ -2,12 +2,17 @@ const {createAnimation, animate, update, createSvgElement, setAttributes, scale,
 
 const elements = [
   {
-    create: (document) => (
-      createSvgElement(document, 'path', {
+    create: (document) => {
+      const el = createSvgElement(document, 'path', {
         d: 'M 50,5 L 50,395',
         stroke: 'brown',
-      })
-    ),
+      });
+      svg.appendChild(el);
+      return el;
+    },
+    destroy: el => {
+      svg.removeChild(el);
+    },
     frames: [
       {
         time: 0,
@@ -15,13 +20,20 @@ const elements = [
     ],
   },
   {
-    create: document => createSvgElement(document, 'circle', {
-      cx: 50,
-      cy: 10,
-      r: 5,
-      fill: 'white',
-      stroke: color(0xff0000),
-    }),
+    create: document => {
+      const el = createSvgElement(document, 'circle', {
+        cx: 50,
+        cy: 10,
+        r: 5,
+        fill: 'white',
+        stroke: color(0xff0000),
+      });
+      svg.appendChild(el);
+      return el;
+    },
+    destroy: el => {
+      svg.removeChild(el);
+    },
     frames: [
       {
         time: 0,
@@ -63,13 +75,20 @@ const elements = [
     ],
   },
   {
-    create: document => createSvgElement(document, 'circle', {
-      cx: 50,
-      cy: 390,
-      r: 5,
-      fill: 'white',
-      stroke: color(0xff0000),
-    }),
+    create: document => {
+      const el = createSvgElement(document, 'circle', {
+        cx: 50,
+        cy: 390,
+        r: 5,
+        fill: 'white',
+        stroke: color(0xff0000),
+      });
+      svg.appendChild(el);
+      return el;
+    },
+    destroy: el => {
+      svg.removeChild(el);
+    },
     frames: [
       {
         time: 0,
@@ -114,13 +133,20 @@ const elements = [
     ],
   },
   {
-    create: document => createSvgElement(document, 'circle', {
-      cx: 50,
-      cy: 200,
-      r: 10,
-      fill: 'white',
-      stroke: 'green',
-    }),
+    create: document => {
+      const el = createSvgElement(document, 'circle', {
+        cx: 50,
+        cy: 200,
+        r: 10,
+        fill: 'white',
+        stroke: 'green',
+      });
+      svg.appendChild(el);
+      return el;
+    },
+    destroy: el => {
+      svg.removeChild(el);
+    },
     frames: [
       {
         time: 0,
@@ -151,12 +177,19 @@ const elements = [
     ],
   },
   {
-    create: document => createSvgElement(document, 'text', {
-      x: 50,
-      y: 205,
-      'text-anchor': 'middle',
-      color: 'green',
-    }, '7'),
+    create: document => {
+      const el = createSvgElement(document, 'text', {
+        x: 50,
+        y: 205,
+        'text-anchor': 'middle',
+        color: 'green',
+      }, '7');
+      svg.appendChild(el);
+      return el;
+    },
+    destroy: el => {
+      svg.removeChild(el);
+    },
     frames: [
       {
         time: 0,

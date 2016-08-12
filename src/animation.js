@@ -1,6 +1,8 @@
 import BezierEasing from 'bezier-easing';
 
 
+const noop = () => {};
+
 export function createAnimation(elements, options) {
   const duration = elements.reduce((end, {frames}) => (
     Math.max(end,
@@ -32,7 +34,10 @@ export function createAnimation(elements, options) {
     const start = frames.reduce((min, {time}) => Math.min(min, time), Infinity);
     const end = frames.reduce((max, {end}) => Math.max(max, end), 0);
 
-    return Object.assign({}, element, {
+    return Object.assign({
+      create: noop,
+      destroy: noop,
+    }, element, {
       frames,
       start,
       end,
@@ -59,7 +64,7 @@ export function animate(animation) {
 export function deanimate(animation) {
   for (let element of animation.elements) {
     if (element.dom) {
-      svg.removeChild(element.dom);
+      element.destroy(element.dom);
       element.dom = null;
     }
   }
@@ -78,13 +83,12 @@ export function update(time) {
       for (let element of animation.elements) {
         const frame = element.frames.find(frame => frame.time <= animationTime && frame.end >= animationTime);
         if (!frame && element.dom) {
-          svg.removeChild(element.dom);
+          element.destroy(element.dom);
           element.dom = null;
 
         } else if (frame) {
           if (!element.dom) {
             element.dom = element.create(document);
-            svg.appendChild(element.dom);
           }
 
           if (frame.update) {
